@@ -10,12 +10,12 @@ from sklearn.ensemble import AdaBoostClassifier
 
 import functions
 
-clf1 = GaussianNB() #Naive Bayes
-clf2 = svm.SVC(kernel="linear", tol=1e-3, gamma="scale") #Support Vector Machines
-clf3 = SGDClassifier(loss="epsilon_insensitive") #Stochastic Gradient Descent
-clf4 = RidgeClassifier(solver="cholesky") #Ridge Classifier
-clf5 = GradientBoostingClassifier(n_estimators=80, learning_rate=1.0, max_depth=1, random_state=0) #Gradient Boosting Classifier
-clf6 = AdaBoostClassifier(n_estimators=80, learning_rate=1.1) #Ada Boost Classifier
+classifier1 = GaussianNB() #Naive Bayes
+classifier2 = svm.SVC(kernel="linear", tol=1e-3, gamma="scale") #Support Vector Machines
+classifier3 = SGDClassifier(loss="epsilon_insensitive") #Stochastic Gradient Descent
+classifier4 = RidgeClassifier(solver="cholesky") #Ridge Classifier
+classifier5 = GradientBoostingClassifier(n_estimators=80, learning_rate=1.0, max_depth=1, random_state=0) #Gradient Boosting Classifier
+classifier6 = AdaBoostClassifier(n_estimators=80, learning_rate=1.1) #Ada Boost Classifier
 
 parkinson_csv = pd.read_csv("parkinsons.csv")
 print("Dane pacjentów zostały wczytane!")
@@ -59,7 +59,7 @@ x_train_all = x_train[:150]
 y_train_all = y_train[:150]
 
 select = 0
-clf = 0
+classifier = 0
 while True:
     print('')
     print('MENU')
@@ -74,28 +74,28 @@ while True:
     print('')
     if select == '1':
         print("Wybrana Klasyfikacja: Naive Bayes")
-        functions.train_predict(clf1, x_train_all, y_train_all, x_test, y_test)
-        clf = clf1
+        functions.train_predict(classifier1, x_train_all, y_train_all, x_test, y_test)
+        classifier = classifier1
     elif select == '2':
         print("Wybrana Klasyfikacja: Support Vector Machines")
-        functions.train_predict(clf2, x_train_all, y_train_all, x_test, y_test)
-        clf = clf2
+        functions.train_predict(classifier2, x_train_all, y_train_all, x_test, y_test)
+        classifier = classifier2
     elif select == '3':
         print("Wybrana Klasyfikacja: Stochastic Gradient Descent")
-        functions.train_predict(clf3, x_train_all, y_train_all, x_test, y_test)
-        clf = clf3
+        functions.train_predict(classifier3, x_train_all, y_train_all, x_test, y_test)
+        classifier = classifier3
     elif select == '4':
         print("Wybrana Klasyfikacja: Ridge Classifier")
-        functions.train_predict(clf4, x_train_all, y_train_all, x_test, y_test)
-        clf = clf4
+        functions.train_predict(classifier4, x_train_all, y_train_all, x_test, y_test)
+        classifier = classifier4
     elif select == '5':
         print("Wybrana Klasyfikacja: Gradient Boosting Classifier")
-        functions.train_predict(clf5, x_train_all, y_train_all, x_test, y_test)
-        clf = clf5
+        functions.train_predict(classifier5, x_train_all, y_train_all, x_test, y_test)
+        classifier = classifier5
     elif select == '6':
         print("Wybrana Klasyfikacja: Gradient Boosting Classifier")
-        functions.train_predict(clf6, x_train_all, y_train_all, x_test, y_test)
-        clf = clf6
+        functions.train_predict(classifier6, x_train_all, y_train_all, x_test, y_test)
+        classifier = classifier6
 
     elif select == '0':
         break
@@ -105,15 +105,15 @@ while True:
     if select > '0' and select <= '6':
         score = 'precision'
         print('Trenowanie modelu................................................')
-        clf_out = functions.fit_model(clf, x_train, y_train)
+        classifier_out = functions.fit_model(classifier, x_train, y_train)
         print("Dopasowanie modelu zakończone!")
 
         print("Najlepsze wartości to: ")
 
-        print(clf_out.best_params_)
+        print(classifier_out.best_params_)
 
-        print("Score modelu dla modelu trenującego: {:.4f}.".format(functions.predict_labels(clf_out, x_train, y_train)))
-        print("Score modelu dla modelu testująecgo: {:.4f}.".format(functions.predict_labels(clf_out, x_test, y_test)))
+        print("Score modelu dla modelu trenującego: {:.4f}.".format(functions.predict_labels(classifier_out, x_train, y_train)))
+        print("Score modelu dla modelu testująecgo: {:.4f}.".format(functions.predict_labels(classifier_out, x_test, y_test)))
 
         print("Trenowanie modelu zakończone")
 
