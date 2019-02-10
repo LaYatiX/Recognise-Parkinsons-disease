@@ -2,6 +2,7 @@ from sklearn.metrics import make_scorer
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import f1_score
 from time import time
+from sklearn import svm
 
 
 def train_classifier(clf, x_train, y_train):
@@ -29,8 +30,8 @@ def train_predict(clf, x_train, y_train, x_test, y_test):
 
     train_classifier(clf, x_train, y_train)
 
-    print("F1 score dla zbioru trenującego: {:.4f}.".format(predict_labels(clf, x_train, y_train)))
-    print("F1 score dla zbioru testującego: {:.4f}.".format(predict_labels(clf, x_test, y_test)))
+    print("Score modelu dla modelu trenującego: {:.4f}.".format(predict_labels(clf, x_train, y_train)))
+    print("Score modelu dla modelu testującego: {:.4f}.".format(predict_labels(clf, x_test, y_test)))
 
 
 def performance_metric(y_true, y_predict):
@@ -39,21 +40,11 @@ def performance_metric(y_true, y_predict):
 
 
 def fit_model(classifier, x, y):
-
-    parameters = {'kernel': ['poly', 'rbf', 'sigmoid'], 'degree': [1, 2, 3], 'C': [0.1, 1, 10]}
-
-    f1_scorer = make_scorer(performance_metric,
-                            greater_is_better=True)
-
-    clf = GridSearchCV(classifier,
-                       param_grid=parameters,
-                       scoring=f1_scorer)
-
+    tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]},
+                        {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+    score = 'precision'
+    print("Szukanie najlepszych wartosci parametrów")
+    clf = GridSearchCV(svm.SVC(kernel="linear", tol=1e-3, gamma="scale"), tuned_parameters, cv=5, scoring='%s_macro' % score)
     clf.fit(x, y)
-
-    return clf
-
-def read_data(path):
-
 
     return clf

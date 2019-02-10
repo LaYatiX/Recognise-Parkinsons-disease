@@ -10,8 +10,8 @@ from sklearn.ensemble import AdaBoostClassifier
 
 import functions
 
-clf = GaussianNB() #Naive Bayes
-clf2 = svm.SVC(C=1, kernel="linear", tol="1e-3", gamma="scale") #Support Vector Machines
+clf1 = GaussianNB() #Naive Bayes
+clf2 = svm.SVC(kernel="linear", tol=1e-3, gamma="scale") #Support Vector Machines
 clf3 = SGDClassifier(loss="epsilon_insensitive") #Stochastic Gradient Descent
 clf4 = RidgeClassifier(solver="cholesky") #Ridge Classifier
 clf5 = GradientBoostingClassifier(n_estimators=80, learning_rate=1.0, max_depth=1, random_state=0) #Gradient Boosting Classifier
@@ -52,40 +52,68 @@ num_test = num_all - num_train
 x_train, x_test, y_train, y_test = train_test_split(x_all, y_all, test_size=num_test, random_state=5)
 
 print("Zbiór trenujący: {} samples".format(x_train.shape[0]))
-print("zbiór testujący: {} samples".format(x_test.shape[0]))
+print("Zbiór testujący: {} samples".format(x_test.shape[0]))
 
 
 x_train_all = x_train[:150]
 y_train_all = y_train[:150]
 
+select = 0
+clf = 0
+while True:
+    print('')
+    print('MENU')
+    print("1.Klasyfikacja Naive Bayes")
+    print("2.Klasyfikacja Support Vector Machines")
+    print("3.Klasyfikacja Stochastic Gradient Descent")
+    print("4.Klasyfikacja Ridge Classifier")
+    print("5.Klasyfikacja Gradient Boosting Classifier")
+    print("6.Klasyfikacja Ada Boost Classifier")
+    print("Wybierz 0 by wyjść")
+    select = input('Podaj opcje:')
+    print('')
+    if select == '1':
+        print("Wybrana Klasyfikacja: Naive Bayes")
+        functions.train_predict(clf1, x_train_all, y_train_all, x_test, y_test)
+        clf = clf1
+    elif select == '2':
+        print("Wybrana Klasyfikacja: Support Vector Machines")
+        functions.train_predict(clf2, x_train_all, y_train_all, x_test, y_test)
+        clf = clf2
+    elif select == '3':
+        print("Wybrana Klasyfikacja: Stochastic Gradient Descent")
+        functions.train_predict(clf3, x_train_all, y_train_all, x_test, y_test)
+        clf = clf3
+    elif select == '4':
+        print("Wybrana Klasyfikacja: Ridge Classifier")
+        functions.train_predict(clf4, x_train_all, y_train_all, x_test, y_test)
+        clf = clf4
+    elif select == '5':
+        print("Wybrana Klasyfikacja: Gradient Boosting Classifier")
+        functions.train_predict(clf5, x_train_all, y_train_all, x_test, y_test)
+        clf = clf5
+    elif select == '6':
+        print("Wybrana Klasyfikacja: Gradient Boosting Classifier")
+        functions.train_predict(clf6, x_train_all, y_train_all, x_test, y_test)
+        clf = clf6
 
-print("Naiwny klasyfikator bayesowski:")
-functions.train_predict(clf, x_train_all, y_train_all, x_test, y_test)
+    elif select == '0':
+        break
+    else:
+        print("Niepoprawny kod. Spróbuj ponownie.")
 
-print("Maszyna wektorów nośnych:")
-functions.train_predict(clf2, x_train_all, y_train_all, x_test, y_test)
+    if select > '0' and select <= '6':
+        score = 'precision'
+        print('Trenowanie modelu................................................')
+        clf_out = functions.fit_model(clf, x_train, y_train)
+        print("Dopasowanie modelu zakończone!")
 
-print("Zrównoleglona optymalizacja stochastyczna:")
-functions.train_predict(clf3, x_train_all, y_train_all, x_test, y_test)
+        print("Najlepsze wartości to: ")
 
-print("Gradient Tree Boosting:")
-functions.train_predict(clf4, x_train_all, y_train_all, x_test, y_test)
+        print(clf_out.best_params_)
 
+        print("Score modelu dla modelu trenującego: {:.4f}.".format(functions.predict_labels(clf_out, x_train, y_train)))
+        print("Score modelu dla modelu testująecgo: {:.4f}.".format(functions.predict_labels(clf_out, x_test, y_test)))
 
-print('Trenowanie modelu..............................................................................................')
+        print("Trenowanie modelu zakończone")
 
-start = time()
-
-clf2 = functions.fit_model(clf2, x_train, y_train)
-print("Dopasowanie modelu zakończone!")
-
-print("Najlepsze wartości to: ")
-
-print(clf2.best_params_)
-
-print("Score modelu dla modelu trenującego: {:.4f}.".format(functions.predict_labels(clf2, x_train, y_train)))
-print("Score modelu dla modelu testująecgo: {:.4f}.".format(functions.predict_labels(clf2, x_test, y_test)))
-
-end = time()
-
-print("Trenowanie modelu zakończone")
